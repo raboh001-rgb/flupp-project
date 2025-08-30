@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(timeout 5 npm run start)",
+      "Bash(npm outdated)",
+      "Bash(npm update:*)",
+      "Bash(npm run clean:*)",
+      "Bash(npm install)",
+      "Bash(timeout 10 npm run start)",
+      "Bash(node:*)",
+      "Read(C:\\Users\\hrabo\\AppData\\Roaming\\Claude/**)",
+      "Bash(dir:*)",
+      "Bash(curl:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout 5 npm start)",
+      "Bash(timeout 10 npm start)",
+      "Bash(taskkill:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(git reset:*)",
+      "Bash(git show:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git init:*)",
+      "Bash(xcopy:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

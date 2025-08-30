@@ -1,0 +1,22 @@
+{
+  "name": "flupp-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for Flupp orchestration",
+  "main": "dist/stdio.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/stdio.js",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.5.4"
+  }
+}

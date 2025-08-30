@@ -1,0 +1,38 @@
+enum Status {
+  pending
+  paid
+  cancelled
+}
+
+model Booking {
+  id              String    @id @default(cuid())
+  petName         String
+  species         String
+  serviceType     String
+  startAt         DateTime
+  endAt           DateTime
+  priceCents      Int
+  currency        String    @default("GBP")
+  customerEmail   String
+  status          Status    @default(pending)
+  paymentIntentId String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  reviews         Review[]
+
+  @@index([createdAt])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  bookingId String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+}
+

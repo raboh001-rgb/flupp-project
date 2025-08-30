@@ -1,0 +1,35 @@
+{
+  "name": "@modelcontextprotocol/server-flupp",
+  "version": "1.0.0",
+  "description": "Custom MCP server for Flupp backend + example tools",
+  "license": "MIT",
+  "author": "Hisham Rabouhi",
+  "type": "module",
+  "main": "dist/everything.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/stdio.js",
+    "start:streamableHttp": "node dist/streamableHttp.js",
+    "start:sse": "node dist/sse.js",
+    "watch": "tsc --watch",
+    "clean": "shx rm -rf dist node_modules",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "shx": "^0.3.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
