@@ -5,15 +5,52 @@ import { z } from 'zod'
 
 const app = express()
 
-// Middleware
-app.use(helmet())
-app.use(cors({
-  origin: true, // Allow all origins for development/Replit
-  credentials: true,
-  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}))
-app.use(express.json())
+// Enhanced logging function
+const log = (message, level = 'INFO') => {
+  const timestamp = new Date().toISOString()
+  console.log(`[${timestamp}] [${level}] [APP] ${message}`)
+}
+
+log('Initializing Flupp Express application...')
+
+// Middleware with enhanced error handling
+try {
+  // Configure Helmet for Replit compatibility
+  app.use(helmet({
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        connectSrc: ["'self'", "https:"]
+      }
+    }
+  }))
+  
+  log('✅ Helmet security middleware configured')
+
+  // Configure CORS for Replit environment
+  app.use(cors({
+    origin: true, // Allow all origins for development/Replit
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+  }))
+  
+  log('✅ CORS middleware configured')
+
+  // Body parsing with size limits for stability
+  app.use(express.json({ limit: '10mb' }))
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+  
+  log('✅ Body parsing middleware configured')
+} catch (error) {
+  log(`❌ Middleware configuration error: ${error.message}`, 'ERROR')
+  throw error
+}
 
 // In-memory storage for testing (replace with database in production)
 let bookings = new Map()
@@ -73,9 +110,25 @@ const handleValidationError = (error) => {
   }
 }
 
-// Routes
+log('✅ Application initialization complete')
+
+// Health check route with comprehensive diagnostics
 app.get('/health', (req, res) => {
-  res.status(200).json({ ok: true })
+  try {
+    const healthData = {
+      ok: true,
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      environment: process.env.NODE_ENV || 'development',
+      version: '1.0.0'
+    }
+    log('Health check requested - server is healthy')
+    res.status(200).json(healthData)
+  } catch (error) {
+    log(`❌ Health check error: ${error.message}`, 'ERROR')
+    res.status(500).json({ ok: false, error: 'Health check failed' })
+  }
 })
 
 // POST /api/bookings - Create a new booking
@@ -263,23 +316,50 @@ app.get('/api/reviews/for-booking/:bookingId', (req, res) => {
   }
 })
 
-// JSON parsing error handler - must come before other error handlers
+// Enhanced JSON parsing error handler
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    return res.status(400).json({ error: 'Invalid JSON format' })
+    log(`❌ JSON parsing error from ${req.ip}: ${err.message}`, 'ERROR')
+    return res.status(400).json({ error: 'Invalid JSON format', details: 'Request body contains malformed JSON' })
   }
   next(err)
 })
 
-// Global error handling middleware
+// Enhanced global error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err)
-  res.status(500).json({ error: 'Internal server error' })
+  const errorId = Date.now()
+  log(`❌ [${errorId}] Unhandled error in ${req.method} ${req.url}:`, 'ERROR')
+  log(`❌ [${errorId}] ${err.message}`, 'ERROR')
+  log(`❌ [${errorId}] Stack: ${err.stack}`, 'ERROR')
+  
+  // Don't expose sensitive error details in production
+  const isDev = process.env.NODE_ENV !== 'production'
+  res.status(500).json({ 
+    error: 'Internal server error',
+    errorId: errorId,
+    ...(isDev && { details: err.message, stack: err.stack })
+  })
 })
 
-// 404 handler - must be last
+// Enhanced 404 handler with logging
 app.use('*', (req, res) => {
-  returnNotFound(res, 'Route not found')
+  log(`❌ 404 - Route not found: ${req.method} ${req.url}`, 'WARN')
+  returnNotFound(res, `Route not found: ${req.method} ${req.url}`)
 })
+
+// Process-level error handlers to prevent crashes
+process.on('uncaughtException', (error) => {
+  log(`❌ Uncaught Exception: ${error.message}`, 'FATAL')
+  log(`❌ Stack: ${error.stack}`, 'FATAL')
+  // Don't exit immediately, let graceful shutdown handle it
+})
+
+process.on('unhandledRejection', (reason, promise) => {
+  log(`❌ Unhandled Promise Rejection at: ${promise}`, 'FATAL')
+  log(`❌ Reason: ${reason}`, 'FATAL')
+  // Don't exit immediately, let graceful shutdown handle it
+})
+
+log('✅ Error handlers and process-level handlers configured')
 
 export default app
