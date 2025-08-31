@@ -7,7 +7,12 @@ const app = express()
 
 // Middleware
 app.use(helmet())
-app.use(cors())
+app.use(cors({
+  origin: true, // Allow all origins for development/Replit
+  credentials: true,
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
 app.use(express.json())
 
 // In-memory storage for testing (replace with database in production)
