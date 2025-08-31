@@ -1,23 +1,25 @@
-# Replit configuration for Flupp backend
+# Simple Replit configuration for Flupp Node.js backend
+# No Nix dependencies - uses standard Replit Node.js environment
+
 run = "cd backend/flupp && npm install && npm start"
 modules = ["nodejs-20"]
-
-[nix]
-channel = "stable-22_11"
 
 [deployment]
 run = ["sh", "-c", "cd backend/flupp && npm install && npm start"]
 
 [env]
-# Let Replit set PORT automatically, fallback to 3000
 HOST = "0.0.0.0"
-NODE_ENV = "production"
+NODE_ENV = "development"
+PORT = "8787"
 
-[[ports]]
-localPort = 3000
-externalPort = 80
-
-# Alternative port configuration
 [[ports]]
 localPort = 8787
-externalPort = 8787
+externalPort = 80
+
+[languages]
+
+[languages.javascript]
+pattern = "**/{*.js,*.jsx,*.ts,*.tsx,*.mjs}"
+
+[languages.javascript.languageServer]
+start = "typescript-language-server --stdio"
