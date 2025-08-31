@@ -33,7 +33,8 @@
       "Bash(npm ls:*)",
       "Bash(npm:*)",
       "Bash(timeout:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
