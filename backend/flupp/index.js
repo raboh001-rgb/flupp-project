@@ -1,7 +1,7 @@
 import app from './app.js'
 
 // Robust port and host configuration for Replit
-const PORT = parseInt(process.env.PORT) || 3000  // Replit standard port
+const PORT = parseInt(process.env.PORT) || 8787  // Use 8787 as specified
 const HOST = process.env.HOST || '0.0.0.0'
 
 // Enhanced logging function

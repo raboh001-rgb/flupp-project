@@ -10,10 +10,10 @@ run = ["sh", "-c", "cd backend/flupp && npm install && npm start"]
 [env]
 HOST = "0.0.0.0"
 NODE_ENV = "development"
-PORT = "3000"
+PORT = "8787"
 
 [[ports]]
-localPort = 3000
+localPort = 8787
 externalPort = 80
 
 [languages]
