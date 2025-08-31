@@ -23,7 +23,9 @@
       "Bash(git show:*)",
       "Bash(gh repo create:*)",
       "Bash(git init:*)",
-      "Bash(xcopy:*)"
+      "Bash(xcopy:*)",
+      "Bash(grep:*)",
+      "Bash(git remote add:*)"
     ],
     "deny": [],
     "ask": []
