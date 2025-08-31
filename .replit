@@ -1,20 +1,22 @@
-# Simple Replit configuration for Flupp Node.js backend
-# No Nix dependencies - uses standard Replit Node.js environment
+# Replit configuration for Flupp Node.js backend
+# Optimized for external deployment and public URL access
 
 run = "cd backend/flupp && npm install && npm start"
 modules = ["nodejs-20"]
 
 [deployment]
 run = ["sh", "-c", "cd backend/flupp && npm install && npm start"]
+deploymentTarget = "cloudrun"
 
 [env]
 HOST = "0.0.0.0"
-NODE_ENV = "development"
+NODE_ENV = "production"
 PORT = "8787"
 
 [[ports]]
 localPort = 8787
 externalPort = 80
+exposeLocalhost = true
 
 [languages]
 
