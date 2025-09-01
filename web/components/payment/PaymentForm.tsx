@@ -95,7 +95,7 @@ export function PaymentForm({
         onError?.(error.message || 'Payment failed')
       } else {
         setMessage('An unexpected error occurred.')
-        onError?('An unexpected error occurred.')
+        onError?.('An unexpected error occurred.')
       }
     } else {
       // Payment succeeded - this will be handled by the redirect

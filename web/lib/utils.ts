@@ -120,6 +120,13 @@ export function calculateDistance(
   return Math.round(d * 10) / 10 // Round to 1 decimal place
 }
 
+export function formatDistance(distance: number, unit: string = 'miles'): string {
+  if (distance < 0.1) {
+    return '< 0.1 miles'
+  }
+  return `${distance} ${unit}`
+}
+
 function deg2rad(deg: number): number {
   return deg * (Math.PI / 180)
 }

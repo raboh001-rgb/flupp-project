@@ -59,22 +59,7 @@ export default function BookingPage({ params }: { params: { providerId: string }
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<BookingFormData>({
-    resolver: zodResolver(bookingSchema.omit({
-      serviceType: true,
-      providerId: true,
-      petId: true,
-      emergencyContact: true,
-    }).extend({
-      petName: bookingSchema.shape.petId,
-      petSpecies: bookingSchema.shape.petId,
-      petAge: bookingSchema.shape.petId,
-      petWeight: bookingSchema.shape.petId,
-      emergencyContactName: bookingSchema.shape.emergencyContact.shape.name,
-      emergencyContactPhone: bookingSchema.shape.emergencyContact.shape.phone,
-      emergencyContactRelationship: bookingSchema.shape.emergencyContact.shape.relationship,
-    }))
-  })
+  } = useForm<BookingFormData>()
 
   const startDate = watch('startDate')
   const endDate = watch('endDate')
