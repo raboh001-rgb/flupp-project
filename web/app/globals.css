@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Flupp fonts */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* CSS Custom Properties */
+:root {
+  --background: 48 48 43; /* neutral-50 with slight warm tint */
+  --foreground: 28 25 23; /* neutral-900 */
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #fafaf9 0%, #f5f5f4 100%);
+  color: #1c1917;
+  line-height: 1.6;
+}
+
+/* Typography hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #292524;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  background: linear-gradient(135deg, #6B8E5A 0%, #8B7355 50%, #A0845C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+/* Component styles */
+.flupp-card {
+  @apply bg-white/80 backdrop-blur-sm rounded-flupp shadow-flupp border border-flupp-neutral-200/50 transition-all duration-300 hover:shadow-flupp-lg hover:scale-[1.02];
+}
+
+.flupp-button {
+  @apply inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white rounded-flupp transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.flupp-button-primary {
+  @apply flupp-button bg-flupp-gradient hover:brightness-110 focus:ring-flupp-sage/50;
+}
+
+.flupp-button-secondary {
+  @apply flupp-button bg-flupp-neutral-600 hover:bg-flupp-neutral-700 focus:ring-flupp-neutral-500/50;
+}
+
+.flupp-button-outline {
+  @apply flupp-button bg-transparent text-flupp-sage border-2 border-flupp-sage hover:bg-flupp-sage hover:text-white focus:ring-flupp-sage/50;
+}
+
+.flupp-input {
+  @apply w-full px-4 py-3 text-sm border border-flupp-neutral-300 rounded-flupp focus:outline-none focus:ring-2 focus:ring-flupp-sage/50 focus:border-flupp-sage transition-colors duration-200 bg-white/50 backdrop-blur-sm;
+}
+
+.flupp-input:focus {
+  @apply bg-white;
+}
+
+/* Service category cards */
+.service-card {
+  @apply flupp-card p-6 text-center group cursor-pointer;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+}
+
+.service-card:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+}
+
+.service-card-boarding {
+  @apply hover:shadow-warm;
+}
+
+.service-card-grooming {
+  @apply hover:shadow-cool;
+}
+
+.service-card-daycare {
+  @apply hover:shadow-purple;
+}
+
+.service-card-vet {
+  @apply hover:shadow-flupp-lg;
+}
+
+.service-card-marketplace {
+  @apply hover:shadow-purple;
+}
+
+/* Animation utilities */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s ease-out;
+}
+
+.animate-bounce-gentle {
+  animation: bounceGentle 2s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceGentle {
+  0%, 100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .flupp-card {
+    @apply mx-4;
+  }
+  
+  .service-card {
+    @apply p-4;
+  }
+}
+
+/* Loading states */
+.loading-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.0) 0%, 
+    rgba(255, 255, 255, 0.2) 50%, 
+    rgba(255, 255, 255, 0.0) 100%
+  );
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/* Success/error states */
+.alert-success {
+  @apply bg-flupp-green-50 text-flupp-green-700 border border-flupp-green-200 rounded-flupp p-4;
+}
+
+.alert-error {
+  @apply bg-red-50 text-red-700 border border-red-200 rounded-flupp p-4;
+}
+
+.alert-info {
+  @apply bg-flupp-teal-50 text-flupp-teal-700 border border-flupp-teal-200 rounded-flupp p-4;
+}

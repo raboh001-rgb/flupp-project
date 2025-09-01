@@ -34,7 +34,9 @@
       "Bash(npm:*)",
       "Bash(timeout:*)",
       "Bash(chmod:*)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:www.flupp.co.uk)",
+      "Bash(del apppage.js)"
     ],
     "deny": [],
     "ask": []
