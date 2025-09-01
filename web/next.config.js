@@ -1,18 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  // Enable TypeScript compilation
-  typescript: {
-    // Don't fail build on TS errors during development
-    ignoreBuildErrors: false,
-  },
-  
-  // Enable ESLint during builds
-  eslint: {
-    // Don't fail build on ESLint errors during development  
-    ignoreDuringBuilds: false,
-  },
-
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   // Optimize for Replit hosting
   trailingSlash: false,
   poweredByHeader: false,
@@ -42,9 +29,6 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Turbopack configuration (stable)
-  turbopack: {},
-
   // Webpack configuration for better module resolution
   webpack: (config, { isServer }) => {
     // Fix for module resolution issues in Replit
@@ -68,4 +52,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
