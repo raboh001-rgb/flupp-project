@@ -1,21 +1,70 @@
+// Environment validation
+const isDevelopment = process.env.NODE_ENV === 'development';
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Helper function for required environment variables
+const getRequiredEnv = (key: string, fallback?: string) => {
+  const value = process.env[key];
+  if (!value && isProduction) {
+    console.error(`Missing required environment variable: ${key}`);
+    throw new Error(`Missing required environment variable: ${key}`);
+  }
+  return value || fallback || '';
+};
+
 export const config = {
   api: {
-    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://workspace-raboh001.repl.co',
+    baseUrl: getRequiredEnv(
+      'NEXT_PUBLIC_API_BASE_URL',
+      isDevelopment ? 'http://localhost:8787' : undefined
+    ),
     timeout: 10000,
   },
   stripe: {
-    publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
-    secretKey: process.env.STRIPE_SECRET_KEY || '',
-    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
+    publishableKey: getRequiredEnv('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY'),
+    secretKey: getRequiredEnv('STRIPE_SECRET_KEY'),
+    webhookSecret: getRequiredEnv('STRIPE_WEBHOOK_SECRET'),
   },
   app: {
     name: process.env.NEXT_PUBLIC_APP_NAME || 'Flupp',
-    url: process.env.NEXTAUTH_URL || 'http://localhost:3000',
+    url: getRequiredEnv(
+      'NEXTAUTH_URL',
+      isDevelopment ? 'http://localhost:3000' : undefined
+    ),
   },
   auth: {
-    secret: process.env.NEXTAUTH_SECRET || '',
+    secret: getRequiredEnv('NEXTAUTH_SECRET'),
   },
+  features: {
+    // Feature flags for different environments
+    enableAnalytics: isProduction,
+    enableErrorReporting: isProduction,
+    enableDebugMode: isDevelopment,
+    enableMockPayments: isDevelopment,
+  },
+  security: {
+    // Security configuration
+    enableCSP: isProduction,
+    enableHSTS: isProduction,
+    trustProxy: isProduction,
+  }
 } as const
+
+// Validate critical configuration on startup
+if (isProduction) {
+  const requiredKeys = [
+    'NEXT_PUBLIC_API_BASE_URL',
+    'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY',
+    'NEXTAUTH_URL',
+    'NEXTAUTH_SECRET'
+  ];
+  
+  const missing = requiredKeys.filter(key => !process.env[key]);
+  if (missing.length > 0) {
+    console.error('Missing required environment variables:', missing);
+    throw new Error(`Production deployment requires these environment variables: ${missing.join(', ')}`);
+  }
+}
 
 export const apiEndpoints = {
   // Booking endpoints

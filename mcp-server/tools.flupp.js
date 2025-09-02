@@ -25,8 +25,8 @@ export const tools = [
                 "customerEmail"
             ]
         },
-        handler: async (input) => {
-            const res = await fetch("http://localhost:8787/api/bookings", {
+        handler: async (input, { baseUrl }) => {
+            const res = await fetch(`${baseUrl}/api/bookings`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(input)
@@ -46,8 +46,8 @@ export const tools = [
             },
             required: ["bookingId"]
         },
-        handler: async (input) => {
-            const res = await fetch("http://localhost:8787/api/payments/create-intent", {
+        handler: async (input, { baseUrl }) => {
+            const res = await fetch(`${baseUrl}/api/payments/create-intent`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(input)

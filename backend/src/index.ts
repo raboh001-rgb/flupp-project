@@ -24,6 +24,8 @@ const PORT = Number(process.env.PORT ?? 8787);
 
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import Stripe from "stripe";
 import { prisma } from "./services/prisma.js"; // named export
 
@@ -67,20 +69,88 @@ app.post(
   }
 );
 
-// 4) Normal middleware AFTER webhook
-app.use(cors());
-app.use(express.json());
+// 4) Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "js.stripe.com"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "api.stripe.com"],
+      frameSrc: ["js.stripe.com"],
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Allow Stripe embeds
+}));
+
+// Rate limiting - different limits for different endpoints
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: { error: "Too many requests, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const paymentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // stricter limit for payment endpoints
+  message: { error: "Too many payment attempts, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiting
+app.use('/api/bookings', generalLimiter);
+app.use('/api/reviews', generalLimiter);
+app.use('/api/payments/create-intent', paymentLimiter);
+
+// CORS configuration - restrict in production
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? [process.env.FRONTEND_URL].filter(Boolean)
+  : ['http://localhost:3000', 'http://localhost:3001', 'http://0.0.0.0:3000'];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
+}));
+
+app.use(express.json({ limit: '10mb' }));
+
+// Input sanitization
+const { sanitizeInput } = await import("./middleware/auth.js");
+app.use(sanitizeInput);
 
 // 5) Dynamically import routes AFTER env is loaded (prevents ESM hoisting issues)
 const bookings = (await import("./routes/bookings.js")).default;
 const payments = (await import("./routes/payments.js")).default;
 const reviews = (await import("./routes/reviews.js")).default;
+const { errorHandler } = await import("./services/errors.js");
 
 app.use("/api/bookings", bookings);
 app.use("/api/payments", payments);
 app.use("/api/reviews", reviews);
 
-app.get("/health", (_req, res) => res.json({ ok: true }));
+app.get("/health", (_req, res) => res.json({ 
+  ok: true, 
+  timestamp: new Date().toISOString(),
+  environment: process.env.NODE_ENV || 'development'
+}));
+
+// 404 handler for undefined routes
+app.use('*', (req, res) => {
+  res.status(404).json({ 
+    error: 'Route not found',
+    code: 'NOT_FOUND',
+    path: req.originalUrl 
+  });
+});
+
+// Global error handler (must be last)
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Backend listening on http://localhost:${PORT}`);

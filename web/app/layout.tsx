@@ -52,6 +52,8 @@ export const metadata: Metadata = {
   },
 }
 
+import { ErrorBoundary } from '../components/ErrorBoundary'
+
 export default function RootLayout({
   children,
 }: {
@@ -64,7 +66,8 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={`font-inter antialiased bg-gradient-to-br from-flupp-neutral-50 to-flupp-neutral-100`}>
-        <div className="min-h-screen flex flex-col">
+        <ErrorBoundary>
+          <div className="min-h-screen flex flex-col">
           <header className="bg-white/80 backdrop-blur-md border-b border-flupp-neutral-200/50 sticky top-0 z-50">
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center h-16">
@@ -148,7 +151,8 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
-        </div>
+          </div>
+        </ErrorBoundary>
       </body>
     </html>
   )

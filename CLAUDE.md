@@ -13,7 +13,7 @@ To connect Claude Code to your Flupp MCP server, add this configuration to your 
       "args": ["C:\\Users\\hrabo\\servers\\src\\everything\\mcp-server\\dist\\stdio.js"],
       "cwd": "C:\\Users\\hrabo\\servers\\src\\everything\\mcp-server",
       "env": {
-        "FLUPP_BASE_URL": "http://localhost:8787",
+        "FLUPP_BASE_URL": "https://flupp-project.raboh001.repl.co",
         "MCP_SERVER_NAME": "flupp-mcp-server"
       }
     }

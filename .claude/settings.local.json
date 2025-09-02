@@ -36,7 +36,11 @@
       "Bash(chmod:*)",
       "WebSearch",
       "WebFetch(domain:www.flupp.co.uk)",
-      "Bash(del apppage.js)"
+      "Bash(del apppage.js)",
+      "Bash(git rm:*)",
+      "Bash(npx tsc:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
